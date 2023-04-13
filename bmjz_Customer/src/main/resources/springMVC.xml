@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--xmlns== xml namespace-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!-- 自动扫描包 -->
+<!--    <context:component-scan base-package="com.qian.controller"/>-->
+<!--    扫描所有包，将com.qian 下的所有包都扫描，看是否有注解 springmvc管控的组件，主要是controller和拦截器那两个包-->
+    <context:component-scan base-package="com.qian"></context:component-scan>
+
+    <mvc:resources mapping="/css/**" location="/css/"/>
+    <mvc:resources mapping="/js/**" location="/js/"/>
+    <mvc:resources mapping="/images/**" location="/images/"/>
+    <mvc:resources mapping="/element-ui/**" location="/element-ui/"/>
+    <mvc:resources mapping="/element-ui/lib/theme-chalk/**" location="/element-ui/lib/theme-chalk/"/>
+    <mvc:resources mapping="/fonts/**" location="/fonts/"/>
+    <mvc:resources mapping="/fonts/**" location="/fonts/"/>
+
+
+    
+    <!-- 配置Thymeleaf视图解析器 当视图控制器内设置的 名称没有前缀和后缀的时候，会使用thymeleaf解析器-->
+    <bean id="viewResolver" class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
+        <property name="order" value="1"/>
+        <property name="characterEncoding" value="UTF-8"/>
+        <property name="templateEngine">
+            <bean class="org.thymeleaf.spring5.SpringTemplateEngine">
+                <property name="templateResolver">
+                    <bean class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+
+                        <!-- 视图前缀 -->
+                        <property name="prefix" value="/WEB-INF/templates/"/>
+
+                        <!-- 视图后缀 -->
+                        <property name="suffix" value=".html"/>
+                        <property name="templateMode" value="HTML5"/>
+                        <property name="characterEncoding" value="UTF-8" />
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+
+    <!--
+       处理静态资源，例如html、js、css、jpg
+      若只设置该标签，则只能访问静态资源，其他请求则无法访问
+      此时必须设置<mvc:annotation-driven/>解决问题 即使用注解来处理其他请求
+     -->
+    <!--将'/' 映射成index的位置，再通过thymeleaf获取到该页面 在idea中表现为自动打开到 / 页面
+    设置此标签后，必须开启mvc注解驱动，否则其他请求将无法访问
+         ====设置默认开启的页面 ==login.html  ,即将 / 映射成login_page的地址
+    -->
+    <mvc:view-controller path="/" view-name="login_page"></mvc:view-controller>
+    <mvc:view-controller path="/file" view-name="fileUpAndDown"></mvc:view-controller>
+
+    <!--开放对静态资源的访问，如js，css,html,jpg... -->
+    <mvc:default-servlet-handler />
+
+    <!-- 开启mvc注解驱动 -->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <!-- 处理响应中文内容乱码 -->
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="defaultCharset" value="UTF-8" />
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html</value>
+                        <value>application/json</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!--必须通过文件解析器的解析才能将文件转换为MultipartFile对象 ，springmvc根据id获取解析器-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"></bean>
+
+
+    <!--    配置拦截器-->
+    <mvc:interceptors>
+<!--        <bean class="com.qian.interceptors.FirstInterceptor"></bean> 拦截所有请求，即检查所有请求-->
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/loginPage"/>
+            <mvc:exclude-mapping path="/"/><!--/ 映射的是login_page.html -->
+            <mvc:exclude-mapping path="/registerPage"/>
+            <ref bean="firstInterceptor"></ref>
+        </mvc:interceptor>
+    </mvc:interceptors>
+</beans>

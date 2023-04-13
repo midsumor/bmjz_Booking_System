@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <typeAliases>
+        <package name="com.qian.model"/>
+    </typeAliases>
+
+    <!--
+    environments：配置数据库连接环境信息。可以配置多个environment，通过default属性切换不同的environment
+    -->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <!--数据库连接信息-->
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql:///bmjz_system_data?useSSL=false"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+
+<!--        在BatisTestDemo2类中用到了这里的配置 在连接数据库时，通过读入此配置文件来 产生连接-->
+        <environment id="qian_mysql"><!--未使用UserMapper接口代理的时候就用这个qian_mysql.selectAll的方式查询如BatisTestDemo-->
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <!--数据库连接信息-->
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql:///bmjz_system_data?useSSL=false"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <!--加载sql映射文件 下行测试ok  -->
+<!--         <mapper resource="com/qian/Mapper/UserMapper.xml"/> &lt;!&ndash;这里是直接访问UserMapper.xml文件来实现映射 即没有用到UserMapper接口&ndash;&gt;-->
+        <!--如果Mapper接口名称和SQL映射文件名称相同，并在同一目录下，则可以使用包扫描的方式简化SQL映射文件的加载。
+也就是将核心配置文件的加载映射配置文件的配置修改为如下，即两种写法皆可-->
+        <!--Mapper代理方式  下行测试ok-->
+        <package name="com.qian.mapper"/><!--这里其实是访问的java///Mapper文件夹下的UserMapper接口来代理-->
+    </mappers>
+</configuration>
