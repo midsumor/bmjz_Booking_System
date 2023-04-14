@@ -9,7 +9,11 @@
 部分页面预览：
 购物车界面，可以选择和删除订单，使用vue动态显示勾选的服务的总价
 ![盘](https://user-images.githubusercontent.com/130140311/231936941-185cafbb-4ab7-4b40-976b-838d11329407.jpg)
+
+
 订单信息提交前进行预览，使用Vue做动态绑定，可以动态的显示商品总价。提交订单后由Ajax发送到后台进行处理
 ![订单信息](https://user-images.githubusercontent.com/130140311/231937002-034bf51a-886b-43da-af62-19753e17e6af.jpg)
+
+
 商家界面，可以管理上架的服务，如修改服务商品信息和删除等操作
 ![服务管理](https://user-images.githubusercontent.com/130140311/231937300-ccd82b84-b62d-48b2-beb0-7522147669bc.jpg)
